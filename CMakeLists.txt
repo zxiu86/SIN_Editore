@@ -1,3 +1,4 @@
+#v1 الصياد
 cmake_minimum_required(VERSION 3.22)
 project(SINEditor VERSION 0.2.0 LANGUAGES C CXX)
 
@@ -21,7 +22,6 @@ set(BUILD_GAMES    OFF CACHE BOOL "" FORCE)
 set(BUILD_TESTING  OFF CACHE BOOL "" FORCE)
 
 if(ANDROID)
-    # ANDROID variable is set automatically by the NDK toolchain file
     set(PLATFORM  "Android"                CACHE STRING "" FORCE)
     set(GRAPHICS  "GRAPHICS_API_OPENGL_ES2" CACHE STRING "" FORCE)
     set(USE_AUDIO OFF                       CACHE BOOL   "" FORCE)
@@ -57,8 +57,40 @@ if(ANDROID)
         PLATFORM_ANDROID
         GRAPHICS_API_OPENGL_ES2
     )
-    target_include_directories(sin_editor PRIVATE src)
 
+    # ------------------------------------------------------------------------
+    # تحديد مسار NDK ومسار android_native_app_glue
+    # ------------------------------------------------------------------------
+    if(NOT DEFINED ANDROID_NDK)
+        if(DEFINED ENV{ANDROID_NDK})
+            set(ANDROID_NDK "$ENV{ANDROID_NDK}")
+        elseif(DEFINED CMAKE_ANDROID_NDK)
+            set(ANDROID_NDK "${CMAKE_ANDROID_NDK}")
+        else()
+            message(FATAL_ERROR "ANDROID_NDK not set. Ensure NDK is installed and CMAKE_ANDROID_NDK is defined.")
+        endif()
+    endif()
+
+    set(NATIVE_APP_GLUE_DIR "${ANDROID_NDK}/sources/android/native_app_glue")
+
+    if(NOT EXISTS "${NATIVE_APP_GLUE_DIR}/android_native_app_glue.h")
+        message(FATAL_ERROR "android_native_app_glue.h not found at ${NATIVE_APP_GLUE_DIR}")
+    endif()
+
+    target_include_directories(sin_editor PRIVATE
+        src
+        "${NATIVE_APP_GLUE_DIR}"
+    )
+
+    # بعض إصدارات Raylib تحتاج إلى إضافة ملف المصدر الخاص بـ native_app_glue
+    # نضيفه فقط إذا كان موجوداً ولم يتم تضمينه تلقائياً.
+    if(EXISTS "${NATIVE_APP_GLUE_DIR}/android_native_app_glue.c")
+        target_sources(sin_editor PRIVATE "${NATIVE_APP_GLUE_DIR}/android_native_app_glue.c")
+    endif()
+
+    # ------------------------------------------------------------------------
+    # مكتبات النظام المطلوبة
+    # ------------------------------------------------------------------------
     find_library(LIB_LOG     log)
     find_library(LIB_ANDROID android)
     find_library(LIB_EGL     EGL)
@@ -89,7 +121,12 @@ else()
         target_link_libraries(sin_editor PRIVATE GL m pthread dl rt X11)
     elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         target_link_libraries(sin_editor PRIVATE
-            "-framework OpenGL" "-framework Cocoa" "-framework IOKit" "-framework CoreFoundation")
+            "-framework OpenGL"
+            "-framework Cocoa"
+            "-framework IOKit"
+            "-framework CoreFoundation"
+            "-framework CoreVideo"
+        )
     elseif(WIN32)
         target_link_libraries(sin_editor PRIVATE opengl32 gdi32 winmm)
     endif()
