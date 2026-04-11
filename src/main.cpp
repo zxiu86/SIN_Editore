@@ -1,3 +1,4 @@
+//v1 الصياد
 #include "editor.h"
 #include "highlighter.h"
 #include <raylib.h>
@@ -34,6 +35,30 @@ void ExecuteApp() {
         BeginDrawing();
         ClearBackground({30, 30, 30, 255}); // خلفية سينو الداكنة
         
+        DrawText("SINO IDE: READY", 20, 20, 20, MAROON);
+        DrawText("If you see this, the core is working!", 20, 60, 10, GRAY);
+        
+        // رسم الكود التجريبي
+        DrawText(welcome_text.c_str(), 20, 100, 15, RAYWHITE);
+        
+        EndDrawing();
+    }
+
+    CloseWindow();
+}
+
+#if defined(PLATFORM_ANDROID)
+void android_main(struct android_app* state) {
+    // أهم سطر لمنع الكراش: ربط حالة الأندرويد بـ Raylib
+    SetCallbacks(state); 
+    ExecuteApp();
+}
+#else
+int main() {
+    ExecuteApp();
+    return 0;
+}
+#endif
         DrawText("SINO IDE: READY", 20, 20, 20, MAROON);
         DrawText("If you see this, the core is working!", 20, 60, 10, GRAY);
         
