@@ -62,7 +62,7 @@ FetchContent_MakeAvailable(raylib)
 set(SIN_SOURCES
     src/main.cpp
     src/piece_table.cpp
-    src/code_editor.cpp
+    
 )
 
 set(SIN_HEADERS
