@@ -9,7 +9,7 @@
 //  Token-based, single-pass, cache-invalidated per-line
 // ============================================================
 
-namespace sin {
+namespace sined {
 
 enum class TokenType : uint8_t {
     Normal,
@@ -155,4 +155,4 @@ inline Color Highlighter::color_for(TokenType t) const {
     }
 }
 
-} // namespace sin
+}
