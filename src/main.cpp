@@ -1,6 +1,4 @@
-//v1 الصياد
-#include "editor.h"
-#include "highlighter.h"
+//v2 الصياد
 #include <raylib.h>
 
 #if defined(PLATFORM_ANDROID)
@@ -8,33 +6,60 @@
     #include <android_native_app_glue.h>
     #define ALOG(...) __android_log_print(ANDROID_LOG_INFO, "SINEditor", __VA_ARGS__)
 #else
+    #include <cstdio>
     #define ALOG(...) printf(__VA_ARGS__)
 #endif
 
-namespace ide = sinide;
-
-// ---- دالة التشغيل الرئيسية المعدلة ----
-void ExecuteApp() {
-    // إعدادات النافذة (0,0 تعني ملء الشاشة بالأندرويد)
-    InitWindow(0, 0, "SIN Editor -- SINO IDE");
+// -------------------------------------------------------------
+// تطبيق بسيط جداً: نافذة مع نص ترحيبي
+// -------------------------------------------------------------
+void run_app() {
+    InitWindow(0, 0, "SIN Editor - Test");
     SetTargetFPS(60);
-    
-    ALOG("SINO: Window Initialized Successfully!");
 
-    // كود تجريبي بسيط بدلاً من تحميل ملفات خارجية تسبب كراش
-    std::string welcome_text = "// SIN Editor is Alive!\n// Version: 0.2\n\nfn main() {\n    out \"Hello SINO\";\n}";
-    
-    // ملاحظة: هنا نتأكد من تهيئة الـ Editor بدون لمس الذاكرة الخارجية حالياً
-    ide::TabManager tabs;
-    tabs.add("NewFile.sino");
-    if (tabs.current()) {
-        tabs.current()->buffer.insert(0, welcome_text);
-    }
+    const char* msg = "SIN Editor is Alive!\n\nIf you see this, the core works!";
+    ALOG("Window initialized: %dx%d", GetScreenWidth(), GetScreenHeight());
 
     while (!WindowShouldClose()) {
         BeginDrawing();
-        ClearBackground({30, 30, 30, 255}); // خلفية سينو الداكنة
-        
+        ClearBackground({30, 30, 40, 255});
+
+        DrawText(msg, 20, 20, 18, RAYWHITE);
+        DrawText("(Raylib 5.0)", 20, 100, 14, GRAY);
+
+        EndDrawing();
+    }
+
+    CloseWindow();
+}
+
+// -------------------------------------------------------------
+// نقطة الدخول حسب المنصة
+// -------------------------------------------------------------
+#if defined(PLATFORM_ANDROID)
+void android_main(struct android_app* app) {
+    // Raylib 5.0 لا يحتاج SetCallbacks، بل يمرر android_app عبر InitWindow
+    InitWindow(0, 0, "SIN Editor");
+    SetTargetFPS(60);
+
+    ALOG("Android: Entering main loop");
+
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        ClearBackground({30, 30, 40, 255});
+        DrawText("SIN Editor on Android", 20, 20, 18, RAYWHITE);
+        DrawText("If you see this, native glue works!", 20, 100, 14, GRAY);
+        EndDrawing();
+    }
+
+    CloseWindow();
+}
+#else
+int main() {
+    run_app();
+    return 0;
+}
+#endif        
         DrawText("SINO IDE: READY", 20, 20, 20, MAROON);
         DrawText("If you see this, the core is working!", 20, 60, 10, GRAY);
         
