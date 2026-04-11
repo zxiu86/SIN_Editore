@@ -28,7 +28,6 @@
 
 // ---- Android-specific includes ----------------------------------------------
 #ifdef __ANDROID__  // أو #ifdef ANDROID
-  #include <android_native_app_glue.h>
   #include <android/asset_manager.h>
   #include <android/log.h>
   #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,  "SINEditor", __VA_ARGS__)
