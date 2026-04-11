@@ -602,8 +602,7 @@ static void app_shutdown() {
 // =============================================================================
 //  Entry: Desktop
 // =============================================================================
-#if !defined(PLATFORM_ANDROID)
-
+#ifndef __ANDROID__
 int main(int argc, char* argv[]) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT);
     InitWindow(1280, 800, "SIN Editor -- SINO IDE");
@@ -624,7 +623,6 @@ int main(int argc, char* argv[]) {
 //  Entry: Android
 // =============================================================================
 #else
-
 void android_main(struct android_app* state) {
     (void)state;
     InitWindow(0, 0, "SIN Editor");
