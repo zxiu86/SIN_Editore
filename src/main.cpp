@@ -1,39 +1,63 @@
-//  SIN Editor -- main.cpp
-//  Raylib 5.0  |  C++20
-//  Works on Desktop (Linux / Windows / macOS) and Android.
-//
-//  ANDROID NOTE:
-//  Raylib's own rcore_android.c provides android_main() which calls main().
-//  So we write a normal int main() for both platforms -- no #ifdef needed
-//  for the entry point itself.
-//
-//  NAMESPACE NOTE:
-//  All editor types live in namespace  sinide  (not "sin" which conflicts
-//  with the C math function std::sin).  We use the alias  ide::  below.
-
-#include "editor.h"      // sinide::Document, sinide::TabManager
-#include "highlighter.h" // sinide::Highlighter, sinide::THEME, sinide::Token
-
+#include "editor.h"
+#include "highlighter.h"
 #include <raylib.h>
-#include <raymath.h>
 
-#include <algorithm>
-#include <cstdio>
-#include <filesystem>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
-
-// Android logging
 #if defined(PLATFORM_ANDROID)
-  #include <android/log.h>
-  #define ALOG(...) __android_log_print(ANDROID_LOG_INFO, "SINEditor", __VA_ARGS__)
+    #include <android/log.h>
+    #include <android_native_app_glue.h>
+    #define ALOG(...) __android_log_print(ANDROID_LOG_INFO, "SINEditor", __VA_ARGS__)
 #else
-  #define ALOG(...) (void)0
+    #define ALOG(...) printf(__VA_ARGS__)
 #endif
 
-// Short alias -- avoids typing sinide:: everywhere AND avoids "using namespace"
+namespace ide = sinide;
+
+// ---- دالة التشغيل الرئيسية المعدلة ----
+void ExecuteApp() {
+    // إعدادات النافذة (0,0 تعني ملء الشاشة بالأندرويد)
+    InitWindow(0, 0, "SIN Editor -- SINO IDE");
+    SetTargetFPS(60);
+    
+    ALOG("SINO: Window Initialized Successfully!");
+
+    // كود تجريبي بسيط بدلاً من تحميل ملفات خارجية تسبب كراش
+    std::string welcome_text = "// SIN Editor is Alive!\n// Version: 0.2\n\nfn main() {\n    out \"Hello SINO\";\n}";
+    
+    // ملاحظة: هنا نتأكد من تهيئة الـ Editor بدون لمس الذاكرة الخارجية حالياً
+    ide::TabManager tabs;
+    tabs.add("NewFile.sino");
+    if (tabs.current()) {
+        tabs.current()->buffer.insert(0, welcome_text);
+    }
+
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        ClearBackground({30, 30, 30, 255}); // خلفية سينو الداكنة
+        
+        DrawText("SINO IDE: READY", 20, 20, 20, MAROON);
+        DrawText("If you see this, the core is working!", 20, 60, 10, GRAY);
+        
+        // رسم الكود التجريبي
+        DrawText(welcome_text.c_str(), 20, 100, 15, RAYWHITE);
+        
+        EndDrawing();
+    }
+
+    CloseWindow();
+}
+
+#if defined(PLATFORM_ANDROID)
+void android_main(struct android_app* state) {
+    // أهم سطر لمنع الكراش: ربط حالة الأندرويد بـ Raylib
+    SetCallbacks(state); 
+    ExecuteApp();
+}
+#else
+int main() {
+    ExecuteApp();
+    return 0;
+}
+#endif
 // which could conflict with std::sin or other math names
 namespace ide = sinide;
 // Palette shortcut
