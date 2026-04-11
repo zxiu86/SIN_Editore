@@ -1,4 +1,3 @@
-//v2 الصياد
 #include <raylib.h>
 
 #if defined(PLATFORM_ANDROID)
@@ -11,7 +10,7 @@
 #endif
 
 // -------------------------------------------------------------
-// تطبيق بسيط جداً: نافذة مع نص ترحيبي
+// دالة تشغيل التطبيق (مشتركة بين المنصات)
 // -------------------------------------------------------------
 void run_app() {
     InitWindow(0, 0, "SIN Editor - Test");
@@ -38,32 +37,15 @@ void run_app() {
 // -------------------------------------------------------------
 #if defined(PLATFORM_ANDROID)
 void android_main(struct android_app* app) {
-    // Raylib 5.0 لا يحتاج SetCallbacks، بل يمرر android_app عبر InitWindow
-    InitWindow(0, 0, "SIN Editor");
-    SetTargetFPS(60);
-
-    ALOG("Android: Entering main loop");
-
-    while (!WindowShouldClose()) {
-        BeginDrawing();
-        ClearBackground({30, 30, 40, 255});
-        DrawText("SIN Editor on Android", 20, 20, 18, RAYWHITE);
-        DrawText("If you see this, native glue works!", 20, 100, 14, GRAY);
-        EndDrawing();
-    }
-
-    CloseWindow();
+    (void)app; // تجنب تحذير "unused parameter"
+    run_app();
 }
 #else
 int main() {
     run_app();
     return 0;
 }
-#endif        
-        DrawText("SINO IDE: READY", 20, 20, 20, MAROON);
-        DrawText("If you see this, the core is working!", 20, 60, 10, GRAY);
-        
-        // رسم الكود التجريبي
+#endif        // رسم الكود التجريبي
         DrawText(welcome_text.c_str(), 20, 100, 15, RAYWHITE);
         
         EndDrawing();
