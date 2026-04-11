@@ -5,8 +5,8 @@
 //  FIXES vs previous version:
 //    [1] DrawRectangleRoundedLinesEx  ->  DrawRectangleRoundedLines
 //        (DrawRectangleRoundedLinesEx does not exist in Raylib 5.0)
-//    [2] COLORS ambiguity resolved via explicit  using sin::COLORS
-//        (avoids ADL lookup failure even with  using namespace sin)
+//    [2] COLORS ambiguity resolved via explicit  using sined::COLORS
+//        (avoids ADL lookup failure even with  using namespace sined)
 //    [3] save_file renamed to save_doc and declared before all callers
 //        (eliminates "no known conversion from Document* to int*" error)
 
@@ -41,8 +41,8 @@
 // ---- Namespace imports ------------------------------------------------------
 namespace fs = std::filesystem;
 
-using namespace sin;       // Document, TabManager, PieceTable, Point, Highlighter ...
-using sin::COLORS;         // FIX [2]: explicit import resolves COLORS in all scopes
+using namespace sined;       // Document, TabManager, PieceTable, Point, Highlighter ...
+using sined::COLORS;         // FIX [2]: explicit import resolves COLORS in all scopes
 
 // ---- Layout -----------------------------------------------------------------
 struct Layout {
@@ -359,7 +359,7 @@ static void draw_menu() {
         bool hov = CheckCollisionPointRec(mp, item);
         if (hov) DrawRectangleRounded(item, 0.2f, 4, {255, 255, 255, 16});
 
-        // FIX [2]: COLORS.accent now resolved correctly via  using sin::COLORS
+        // FIX [2]: COLORS.accent now resolved correctly via  using sined::COLORS
         DrawText(MENU_ITEMS[i].label,
                  (int)(item.x + 16), (int)(item.y + 11), 14,
                  hov ? COLORS.accent : Color{208, 208, 208, 255});
