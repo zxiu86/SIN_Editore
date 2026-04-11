@@ -27,7 +27,7 @@
 #include <vector>
 
 // ---- Android-specific includes ----------------------------------------------
-#if defined(PLATFORM_ANDROID)
+#ifdef __ANDROID__  // أو #ifdef ANDROID
   #include <android_native_app_glue.h>
   #include <android/asset_manager.h>
   #include <android/log.h>
