@@ -73,7 +73,9 @@ set(SIN_HEADERS
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  Android — shared library loaded by the Java activity
-# ─────────────────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────[...]
+#  Android — shared library loaded by the Java activity
+# ──────────────────────────────────────────────────────────────────[...]
 if(PLATFORM_ANDROID)
 
     # Raylib provides a pre-made android_native_app_glue wrapper
@@ -96,6 +98,7 @@ if(PLATFORM_ANDROID)
 
     target_link_libraries(sin_editor PRIVATE
         raylib
+        android_native_app_glue
         ${lib_log}
         ${lib_android}
         ${lib_egl}
@@ -107,27 +110,7 @@ if(PLATFORM_ANDROID)
     set_target_properties(sin_editor PROPERTIES
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs/${ANDROID_ABI}"
     )
-if(PLATFORM_ANDROID)
-    add_library(sin_editor SHARED ${SIN_SOURCES} ${SIN_HEADERS})
-    
-    target_compile_definitions(sin_editor PRIVATE
-        PLATFORM_ANDROID
-        GRAPHICS_API_OPENGL_ES2
-    )
-    
-    target_include_directories(sin_editor PRIVATE src)
-    
-    # هذه هي الإضافة المهمة:
-    # Raylib يحتاج native_app_glue عند البناء لـ Android
-    target_link_libraries(sin_editor PRIVATE
-        raylib
-        android_native_app_glue   # ← أضف هذا السطر
-        ${lib_log}
-        ${lib_android}
-        ${lib_egl}
-        ${lib_gles2}
-        ${lib_opensl}
-    )
+
 endif()
 
 
