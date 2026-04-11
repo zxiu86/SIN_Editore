@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <numeric>
 
-namespace sin {
+namespace sined {
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
